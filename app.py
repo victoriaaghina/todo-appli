@@ -27,5 +27,13 @@ def cocher(id):
     conn.close()
     return redirect('/')
 
+@app.route('/supprimer/<int:id>', methods=['POST'])
+def supprimer(id):
+    conn = sqlite3.connect('taches.db')
+    conn.execute('DELETE FROM taches WHERE id = ?', (id,))
+    conn.commit()
+    conn.close()
+    return redirect('/')
+
 if __name__ == '__main__':
     app.run(debug=True)

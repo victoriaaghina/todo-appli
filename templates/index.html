@@ -17,6 +17,9 @@
                         <button type="submit">Cocher</button>
                     </form>
                 {% endif %}
+                <form action="/supprimer/{{ tache[0] }}" method="POST" style="display:inline">
+                <button type="submit">Supprimer</button>
+                </form>
             </li>
         {% endfor %}
     </ul>
