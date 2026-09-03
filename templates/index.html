@@ -8,8 +8,12 @@
     <h1>Mes tâches</h1>
     <ul>
         {% for tache in taches %}
-            <li>{{ tache }}</li>
+            <li>{{ tache[1] }}</li>
         {% endfor %}
     </ul>
+     <form action="/ajouter" method="POST">
+        <input type="text" name="tache" placeholder="Nouvelle tâche" required>
+        <button type="submit">Ajouter</button>
+    </form>
 </body>
 </html>
