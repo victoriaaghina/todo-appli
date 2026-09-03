@@ -5,6 +5,25 @@
     <title>Ma liste de tâches</title>
 </head>
 <body>
+    {% if pseudo_connecte %}
+    <p>Connecté en tant que : <strong>{{ pseudo_connecte }}</strong></p>
+    {% else %}
+    <p>Tu n'es pas connecté.</p>
+    {% endif %}
+    <h2>Créer un compte</h2>
+    <form action="/inscription" method="POST">
+        <input type="text" name="pseudo" placeholder="Pseudo" required>
+        <input type="password" name="mot_de_passe" placeholder="Mot de passe" required>
+        <button type="submit">S'inscrire</button>
+    </form>
+
+    <h2>Se connecter</h2>
+    <form action="/connexion" method="POST">
+        <input type="text" name="pseudo" placeholder="Pseudo" required>
+        <input type="password" name="mot_de_passe" placeholder="Mot de passe" required>
+        <button type="submit">Se connecter</button>
+    </form>
+
     <h1>Mes tâches</h1>
     <ul>
         {% for tache in taches %}
