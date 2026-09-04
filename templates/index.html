@@ -42,9 +42,11 @@
             </li>
         {% endfor %}
     </ul>
+    {% if pseudo_connecte %}
     <form action="/ajouter" method="POST">
         <input type="text" name="tache" placeholder="Nouvelle tâche" required>
         <button type="submit">Ajouter</button>
     </form>
+    {% endif %}
 </body>
 </html>

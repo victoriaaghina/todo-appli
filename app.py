@@ -9,23 +9,43 @@ app.secret_key = 'oui'
 @app.route('/')
 def index():
     conn = sqlite3.connect('taches.db')
-    taches = conn.execute('SELECT * FROM taches').fetchall()
-    conn.close()
     pseudo_connecte = session.get('pseudo')
+
+    if pseudo_connecte:
+        utilisateur = conn.execute('SELECT * FROM users WHERE pseudo = ?', (pseudo_connecte,)).fetchone()
+        taches = conn.execute('SELECT * FROM taches WHERE id_user = ?', (utilisateur[0],)).fetchall()
+    else:
+        taches = []
+
+    conn.close()
     return render_template('index.html', taches=taches, pseudo_connecte=pseudo_connecte)
 
 @app.route('/ajouter', methods=['POST'])
 def ajouter():
+    if 'pseudo' not in session:
+        return redirect('/')
+
     nouvelle_tache = request.form['tache']
     conn = sqlite3.connect('taches.db')
-    conn.execute('INSERT INTO taches (description) VALUES (?)', (nouvelle_tache,))
+    utilisateur = conn.execute('SELECT * FROM users WHERE pseudo = ?', (session['pseudo'],)).fetchone()
+    conn.execute('INSERT INTO taches (description, id_user) VALUES (?, ?)', (nouvelle_tache, utilisateur[0]))
     conn.commit()
     conn.close()
     return redirect('/')
 
 @app.route('/cocher/<int:id>', methods=['POST'])
 def cocher(id):
+    if 'pseudo' not in session:
+        return redirect('/')
+
     conn = sqlite3.connect('taches.db')
+    utilisateur = conn.execute('SELECT * FROM users WHERE pseudo = ?', (session['pseudo'],)).fetchone()
+    tache = conn.execute('SELECT * FROM taches WHERE id = ?', (id,)).fetchone()
+
+    if tache is None or tache[3] != utilisateur[0]:
+        conn.close()
+        return redirect('/')
+
     conn.execute('UPDATE taches SET fait = 1 WHERE id = ?', (id,))
     conn.commit()
     conn.close()
@@ -33,7 +53,17 @@ def cocher(id):
 
 @app.route('/supprimer/<int:id>', methods=['POST'])
 def supprimer(id):
+    if 'pseudo' not in session:
+        return redirect('/')
+
     conn = sqlite3.connect('taches.db')
+    utilisateur = conn.execute('SELECT * FROM users WHERE pseudo = ?', (session['pseudo'],)).fetchone()
+    tache = conn.execute('SELECT * FROM taches WHERE id = ?', (id,)).fetchone()
+
+    if tache is None or tache[3] != utilisateur[0]:
+        conn.close()
+        return redirect('/')
+
     conn.execute('DELETE FROM taches WHERE id = ?', (id,))
     conn.commit()
     conn.close()
