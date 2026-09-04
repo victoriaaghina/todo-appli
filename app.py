@@ -45,7 +45,7 @@ def ajouter():
 @app.route('/cocher/<int:id>', methods=['POST'])
 def cocher(id):
     if 'pseudo' not in session:
-        return redirect('/')
+        return {'erreur': 'non connecté'}, 401
 
     conn = sqlite3.connect('taches.db')
     utilisateur = conn.execute('SELECT * FROM users WHERE pseudo = ?', (session['pseudo'],)).fetchone()
@@ -53,7 +53,7 @@ def cocher(id):
 
     if tache is None:
         conn.close()
-        return redirect('/')
+        return {'erreur': 'introuvable'}, 404
 
     est_proprietaire = tache[3] == utilisateur[0]
     partage = conn.execute('SELECT * FROM partages WHERE id_tache = ? AND id_user = ?', (id, utilisateur[0])).fetchone()
@@ -61,12 +61,13 @@ def cocher(id):
 
     if not est_proprietaire and not a_acces_partage:
         conn.close()
-        return redirect('/')
+        return {'erreur': 'non autorisé'}, 403
 
-    conn.execute('UPDATE taches SET fait = 1 WHERE id = ?', (id,))
+    nouvel_etat = 0 if tache[2] else 1 #le bouton inverse l'état de la tache (si elle était faite alors elle ne l'est plus et inversement)
+    conn.execute('UPDATE taches SET fait = ? WHERE id = ?', (nouvel_etat, id))
     conn.commit()
     conn.close()
-    return redirect('/')
+    return {'fait': nouvel_etat}
 
 @app.route('/supprimer/<int:id>', methods=['POST'])
 def supprimer(id):

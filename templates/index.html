@@ -28,14 +28,12 @@
     <ul>
         {% for tache in mes_taches %}
             <li>
-                {% if tache[2] %}
-                    <s>{{ tache[1] }}</s>
-                {% else %}
-                    {{ tache[1] }}
-                    <form action="/cocher/{{ tache[0] }}" method="POST" style="display:inline">
-                        <button type="submit">Cocher</button>
-                    </form>
-                {% endif %}
+                <span id="texte-tache-{{ tache[0] }}">
+                    {% if tache[2] %}<s>{{ tache[1] }}</s>{% else %}{{ tache[1] }}{% endif %}
+                </span>
+                <button id="bouton-tache-{{ tache[0] }}" data-tache-id="{{ tache[0] }}" onclick="basculerTache(this.dataset.tacheId)">
+                    {% if tache[2] %}Décocher{% else %}Cocher{% endif %}
+                </button>
 
                 <form action="/supprimer/{{ tache[0] }}" method="POST" style="display:inline">
                     <button type="submit">Supprimer</button>
@@ -64,18 +62,18 @@
     <ul>
         {% for tache in taches_partagees %}
             <li>
-                {% if tache[2] %}
-                    <s>{{ tache[1] }}</s>
-                {% else %}
-                    {{ tache[1] }}
-                    <form action="/cocher/{{ tache[0] }}" method="POST" style="display:inline">
-                        <button type="submit">Cocher</button>
-                    </form>
-                {% endif %}
+                <span id="texte-tache-{{ tache[0] }}">
+                    {% if tache[2] %}<s>{{ tache[1] }}</s>{% else %}{{ tache[1] }}{% endif %}
+                </span>
+                <button id="bouton-tache-{{ tache[0] }}" data-tache-id="{{ tache[0] }}" onclick="basculerTache(this.dataset.tacheId)">
+                    {% if tache[2] %}Décocher{% else %}Cocher{% endif %}
+                </button>
                 — partagé par {{ tache[4] }}
             </li>
         {% endfor %}
     </ul>
 
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
