@@ -8,15 +8,6 @@
     {% if pseudo_connecte %}
     <p>Connecté en tant que : <strong>{{ pseudo_connecte }}</strong> — <a href="/deconnexion">Se déconnecter</a></p>
     {% else %}
-    <p>Tu n'es pas connecté.</p>
-    {% endif %}
-    <h2>Créer un compte</h2>
-    <form action="/inscription" method="POST">
-        <input type="text" name="pseudo" placeholder="Pseudo" required>
-        <input type="password" name="mot_de_passe" placeholder="Mot de passe" required>
-        <button type="submit">S'inscrire</button>
-    </form>
-
     <h2>Se connecter</h2>
     <form action="/connexion" method="POST">
         <input type="text" name="pseudo" placeholder="Pseudo" required>
@@ -24,9 +15,18 @@
         <button type="submit">Se connecter</button>
     </form>
 
-    <h1>Mes tâches</h1>
+    <h2>Créer un compte</h2>
+    <form action="/inscription" method="POST">
+        <input type="text" name="pseudo" placeholder="Pseudo" required>
+        <input type="password" name="mot_de_passe" placeholder="Mot de passe" required>
+        <button type="submit">S'inscrire</button>
+    </form>
+    {% endif %}
+
+
+    <h2>Mes tâches</h2>
     <ul>
-        {% for tache in taches %}
+        {% for tache in mes_taches %}
             <li>
                 {% if tache[2] %}
                     <s>{{ tache[1] }}</s>
@@ -36,8 +36,19 @@
                         <button type="submit">Cocher</button>
                     </form>
                 {% endif %}
+
                 <form action="/supprimer/{{ tache[0] }}" method="POST" style="display:inline">
-                <button type="submit">Supprimer</button>
+                    <button type="submit">Supprimer</button>
+                </form>
+
+                <form action="/partager" method="POST" style="display:inline">
+                    <input type="hidden" name="id_tache" value="{{ tache[0] }}">
+                    <select name="id_user_cible">
+                        {% for u in tous_les_users %}
+                            <option value="{{ u[0] }}">{{ u[1] }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit">Partager</button>
                 </form>
             </li>
         {% endfor %}
@@ -48,5 +59,23 @@
         <button type="submit">Ajouter</button>
     </form>
     {% endif %}
+    
+    <h2>Partagées avec moi</h2>
+    <ul>
+        {% for tache in taches_partagees %}
+            <li>
+                {% if tache[2] %}
+                    <s>{{ tache[1] }}</s>
+                {% else %}
+                    {{ tache[1] }}
+                    <form action="/cocher/{{ tache[0] }}" method="POST" style="display:inline">
+                        <button type="submit">Cocher</button>
+                    </form>
+                {% endif %}
+                — partagé par {{ tache[4] }}
+            </li>
+        {% endfor %}
+    </ul>
+
 </body>
 </html>

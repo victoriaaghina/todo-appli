@@ -13,12 +13,21 @@ def index():
 
     if pseudo_connecte:
         utilisateur = conn.execute('SELECT * FROM users WHERE pseudo = ?', (pseudo_connecte,)).fetchone()
-        taches = conn.execute('SELECT * FROM taches WHERE id_user = ?', (utilisateur[0],)).fetchall()
+        mes_taches = conn.execute('SELECT * FROM taches WHERE id_user = ?', (utilisateur[0],)).fetchall()
+        taches_partagees = conn.execute('''
+            SELECT taches.*, users.pseudo AS utilisateur_partage FROM taches
+            JOIN partages ON taches.id = partages.id_tache
+            JOIN users ON taches.id_user = users.id
+            WHERE partages.id_user = ?
+        ''', (utilisateur[0],)).fetchall()
+        tous_les_users = conn.execute('SELECT * FROM users WHERE id != ?', (utilisateur[0],)).fetchall()
     else:
-        taches = []
+        mes_taches = []
+        taches_partagees = []
+        tous_les_users = []
 
     conn.close()
-    return render_template('index.html', taches=taches, pseudo_connecte=pseudo_connecte)
+    return render_template('index.html', mes_taches=mes_taches, taches_partagees=taches_partagees, pseudo_connecte=pseudo_connecte, tous_les_users=tous_les_users)
 
 @app.route('/ajouter', methods=['POST'])
 def ajouter():
@@ -42,7 +51,15 @@ def cocher(id):
     utilisateur = conn.execute('SELECT * FROM users WHERE pseudo = ?', (session['pseudo'],)).fetchone()
     tache = conn.execute('SELECT * FROM taches WHERE id = ?', (id,)).fetchone()
 
-    if tache is None or tache[3] != utilisateur[0]:
+    if tache is None:
+        conn.close()
+        return redirect('/')
+
+    est_proprietaire = tache[3] == utilisateur[0]
+    partage = conn.execute('SELECT * FROM partages WHERE id_tache = ? AND id_user = ?', (id, utilisateur[0])).fetchone()
+    a_acces_partage = partage is not None
+
+    if not est_proprietaire and not a_acces_partage:
         conn.close()
         return redirect('/')
 
@@ -98,6 +115,27 @@ def connexion():
 @app.route('/deconnexion')
 def deconnexion():
     session.pop('pseudo', None)
+    return redirect('/')
+
+@app.route('/partager', methods=['POST'])
+def partager():
+    if 'pseudo' not in session:
+        return redirect('/')
+
+    id_tache = request.form['id_tache']
+    id_user_cible = request.form['id_user_cible']
+
+    conn = sqlite3.connect('taches.db')
+    utilisateur = conn.execute('SELECT * FROM users WHERE pseudo = ?', (session['pseudo'],)).fetchone()
+    tache = conn.execute('SELECT * FROM taches WHERE id = ?', (id_tache,)).fetchone()
+
+    if tache is None or tache[3] != utilisateur[0]:
+        conn.close()
+        return redirect('/')
+
+    conn.execute('INSERT INTO partages (id_user, id_tache) VALUES (?, ?)', (id_user_cible, id_tache))
+    conn.commit()
+    conn.close()
     return redirect('/')
 
 if __name__ == '__main__':

@@ -14,6 +14,16 @@ conn.execute('''
         mot_de_passe TEXT NOT NULL
     )
 ''')
+
+conn.execute('''
+    CREATE TABLE IF NOT EXISTS partages (
+        id_user INTEGER NOT NULL,
+        id_tache INTEGER NOT NULL,
+        FOREIGN KEY (id_user) REFERENCES users(id),
+        FOREIGN KEY (id_tache) REFERENCES taches(id)
+    )
+''')
+
 conn.commit()
 conn.close()
 
