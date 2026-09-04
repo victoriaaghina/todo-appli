@@ -6,7 +6,7 @@
 </head>
 <body>
     {% if pseudo_connecte %}
-    <p>Connecté en tant que : <strong>{{ pseudo_connecte }}</strong></p>
+    <p>Connecté en tant que : <strong>{{ pseudo_connecte }}</strong> — <a href="/deconnexion">Se déconnecter</a></p>
     {% else %}
     <p>Tu n'es pas connecté.</p>
     {% endif %}

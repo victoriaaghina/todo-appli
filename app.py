@@ -65,5 +65,10 @@ def connexion():
     else:
         return "Pseudo ou mot de passe incorrect"
 
+@app.route('/deconnexion')
+def deconnexion():
+    session.pop('pseudo', None)
+    return redirect('/')
+
 if __name__ == '__main__':
     app.run(debug=True)
