@@ -1,0 +1,103 @@
+/* Style général appliqué à toute la page (le fond, tout le contenu) */
+body {
+    font-family: Arial, sans-serif;  /* la police de caractères utilisée partout sur la page */
+    max-width: 700px;                /* la largeur maximale du contenu, pour ne pas s'étaler sur tout l'écran */
+    margin: 40px auto;               /* espace au-dessus/en-dessous (40px), et centrage horizontal (auto) */
+    padding: 0 20px;                 /* marge interne gauche/droite, pour ne pas coller aux bords sur petit écran */
+    color: #0e9b6e;                  /* couleur du texte par défaut, pour tout le contenu de la page */
+}
+
+/* Les titres de niveau 1 et 2 (h1 = titre principal, h2 = sous-titres comme "Mes tâches") */
+h1, h2 {
+    color: #267a4d;  /* couleur spécifique aux titres, différente du texte normal */
+}
+
+/* Tous les formulaires de la page (connexion, ajout de tâche, partage...) */
+form {
+    margin: 10px 0;  /* espace vertical au-dessus et en-dessous de chaque formulaire */
+}
+
+/* Tous les champs de saisie, listes déroulantes et boutons, en une seule règle */
+input, select, button {
+    padding: 6px 10px;  /* espace intérieur, pour que le texte ne colle pas aux bords */
+    font-size: 14px;    /* taille du texte à l'intérieur de ces éléments */
+}
+
+/* Tous les boutons de la page (Ajouter, Se connecter, Partager...) */
+button {
+    background-color: #68bf82;  /* couleur de fond du bouton (bleu foncé) */
+    color: white;                /* couleur du texte à l'intérieur du bouton */
+    border: none;                 /* enlève le contour par défaut du navigateur */
+    border-radius: 4px;          /* coins légèrement arrondis */
+    cursor: pointer;             /* affiche une petite main au survol, pour indiquer que c'est cliquable */
+}
+
+/* Ce qui se passe QUAND la souris survole un bouton (pseudo-classe :hover) */
+button:hover {
+    background-color: #11371e;  /* couleur de fond légèrement plus foncée au survol, pour un effet visuel */
+}
+
+/* Toutes les listes à puces (la liste des tâches) */
+ul {
+    list-style: none;  /* enlève les puces par défaut devant chaque élément */
+    padding: 0;         /* enlève l'indentation par défaut du navigateur */
+}
+
+/* Chaque élément de liste (chaque tâche individuelle) */
+li {
+    padding: 10px;
+    margin-bottom: 8px;
+    background-color: #f4f4f4;
+    border-radius: 4px;
+    display: flex;              /* active le mode d'alignement flexbox pour cet élément */
+    align-items: center;        /* aligne verticalement tous les éléments enfants au centre */
+    justify-content: space-between;  /* pousse le premier élément à gauche, le dernier à droite */
+    gap: 8px;                   /* petit espace entre chaque élément enfant */
+}
+
+/* La balise <s>, utilisée pour barrer le texte des tâches cochées */
+s {
+    color: #888;  /* grise le texte barré, pour bien montrer qu'il est "terminé" */
+}
+
+/* Classe personnalisée qu'on a ajoutée nous-mêmes, pour le bouton "Supprimer" (icône poubelle) */
+.btn-icon {
+    background-color: #267a4d;   /* couleur de fond spécifique à ce bouton (différente des autres boutons) */
+    padding: 6px 8px;             /* espace intérieur, légèrement différent des autres boutons */
+    display: inline-flex;         /* permet de centrer facilement l'icône à l'intérieur */
+    align-items: center;          /* centre l'icône verticalement dans le bouton */
+    justify-content: center;      /* centre l'icône horizontalement dans le bouton */
+}
+
+/* Ce qui se passe QUAND la souris survole ce bouton précis (icône poubelle) */
+.btn-icon:hover {
+    background-color: #bd1606;  /* couleur légèrement différente au survol, pour l'effet visuel */
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Le lien de déconnexion, stylé pour ressembler à un vrai bouton */
+.btn-deconnexion {
+    background-color: #68bf82;   /* même couleur que les autres boutons, pour rester cohérent */
+    color: white;                 /* texte blanc, comme les autres boutons */
+    padding: 6px 10px;            /* même espace intérieur que les autres boutons */
+    border-radius: 4px;           /* coins arrondis, cohérent avec le reste */
+    text-decoration: none;        /* enlève le soulignement par défaut des liens */
+    cursor: pointer;
+}
+
+.btn-deconnexion:hover {
+    background-color: #11371e;    /* même effet au survol que les autres boutons */
+}
+
+/* Conteneur qui regroupe l'info utilisateur et le bouton de déconnexion */
+.barre-utilisateur {
+    display: flex;                    /* active flexbox pour cette ligne */
+    align-items: center;              /* aligne verticalement les deux éléments au centre */
+    justify-content: space-between;   /* pousse le premier élément à gauche, le second à droite */
+    margin-bottom: 20px;              /* petit espace en dessous, avant le reste de la page */
+}

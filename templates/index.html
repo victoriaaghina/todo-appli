@@ -3,10 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Ma liste de tâches</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     {% if pseudo_connecte %}
-    <p>Connecté en tant que : <strong>{{ pseudo_connecte }}</strong> — <a href="/deconnexion">Se déconnecter</a></p>
+    <div class="barre-utilisateur">
+        <p>Connecté en tant que : <strong>{{ pseudo_connecte }}</strong></p>
+        <a href="/deconnexion" class="btn-deconnexion">Se déconnecter</a>
+    </div>
     {% else %}
     <h2>Se connecter</h2>
     <form action="/connexion" method="POST">
@@ -28,26 +32,38 @@
     <ul>
         {% for tache in mes_taches %}
             <li>
-                <span id="texte-tache-{{ tache[0] }}">
-                    {% if tache[2] %}<s>{{ tache[1] }}</s>{% else %}{{ tache[1] }}{% endif %}
-                </span>
-                <button id="bouton-tache-{{ tache[0] }}" data-tache-id="{{ tache[0] }}" onclick="basculerTache(this.dataset.tacheId)">
-                    {% if tache[2] %}Décocher{% else %}Cocher{% endif %}
-                </button>
+                <div class="actions">
+                    <button id="bouton-tache-{{ tache[0] }}" data-tache-id="{{ tache[0] }}" onclick="basculerTache(this.dataset.tacheId)">
+                            {% if tache[2] %}Décocher{% else %}Cocher{% endif %}
+                        </button>
 
-                <form action="/supprimer/{{ tache[0] }}" method="POST" style="display:inline">
-                    <button type="submit">Supprimer</button>
-                </form>
+                    <span id="texte-tache-{{ tache[0] }}">
+                        {% if tache[2] %}<s>{{ tache[1] }}</s>{% else %}{{ tache[1] }}{% endif %}
+                    </span>
+                </div>
+                <div class="actions">
+                    <form action="/partager" method="POST" style="display:inline">
+                        <input type="hidden" name="id_tache" value="{{ tache[0] }}">
+                        <select name="id_user_cible">
+                            {% for u in tous_les_users %}
+                                <option value="{{ u[0] }}">{{ u[1] }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit">Partager</button>
+                    </form>
 
-                <form action="/partager" method="POST" style="display:inline">
-                    <input type="hidden" name="id_tache" value="{{ tache[0] }}">
-                    <select name="id_user_cible">
-                        {% for u in tous_les_users %}
-                            <option value="{{ u[0] }}">{{ u[1] }}</option>
-                        {% endfor %}
-                    </select>
-                    <button type="submit">Partager</button>
-                </form>
+                    <form action="/supprimer/{{ tache[0] }}" method="POST" style="display:inline">
+                        <button type="submit" class="btn-icon" title="Supprimer">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                <line x1="10" y1="11" x2="10" y2="17"></line>
+                                <line x1="14" y1="11" x2="14" y2="17"></line>
+                            </svg>
+                        </button>
+                    </form>
+
+                </div>
             </li>
         {% endfor %}
     </ul>
@@ -62,13 +78,15 @@
     <ul>
         {% for tache in taches_partagees %}
             <li>
-                <span id="texte-tache-{{ tache[0] }}">
-                    {% if tache[2] %}<s>{{ tache[1] }}</s>{% else %}{{ tache[1] }}{% endif %}
-                </span>
-                <button id="bouton-tache-{{ tache[0] }}" data-tache-id="{{ tache[0] }}" onclick="basculerTache(this.dataset.tacheId)">
-                    {% if tache[2] %}Décocher{% else %}Cocher{% endif %}
-                </button>
-                — partagé par {{ tache[4] }}
+                <div class="actions">
+                    <button id="bouton-tache-{{ tache[0] }}" data-tache-id="{{ tache[0] }}" onclick="basculerTache(this.dataset.tacheId)">
+                        {% if tache[2] %}Décocher{% else %}Cocher{% endif %}
+                    </button>
+                    <span id="texte-tache-{{ tache[0] }}">
+                        {% if tache[2] %}<s>{{ tache[1] }}</s>{% else %}{{ tache[1] }}{% endif %}
+                    </span>
+                </div>
+                 <i>partagée par {{ tache[4] }}</i>
             </li>
         {% endfor %}
     </ul>
